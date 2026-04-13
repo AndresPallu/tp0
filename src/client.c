@@ -1,4 +1,5 @@
 #include "client.h"
+//#include <readline/readline.h>      Es la que incluye la función redline ("> "), pero no se agrega porqeue está en ¿las commons? 
 
 int main(void)
 {
@@ -27,7 +28,17 @@ int main(void)
 	config = iniciar_config();
 
 	valor = config_get_string_value(config, "CLAVE");
+	char * ipDeConfig = config_get_string_value(config, "IP");
+	char * puertoDeConfig = config_get_string_value(config, "PUERTO");
+
+	if (valor == NULL) {
+		abort();
+		};
+
+		
 	log_info(logger, valor);
+	log_info(logger, ipDeConfig);
+	log_info(logger, puertoDeConfig);
 	// Usando el config creado previamente, leemos los valores del config y los 
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
 
@@ -43,30 +54,26 @@ int main(void)
 	// ADVERTENCIA: Antes de continuar, tenemos que asegurarnos que el servidor esté corriendo para poder conectarnos a él
 
 	// Creamos una conexión hacia el servidor
-	conexion = crear_conexion(ip, puerto);
+	//conexion = crear_conexion(ip, puerto);
 
 	// Enviamos al servidor el valor de CLAVE como mensaje
 
 	// Armamos y enviamos el paquete
-	paquete(conexion);
-
-	terminar_programa(conexion, logger, config);
+	//paquete(conexion);
 
 
-	log_destroy(logger);
 
 
 	/*---------------------------------------------------PARTE 5-------------------------------------------------------------*/
 	// Proximamente
 	/*-----------------------------------------------------------------------------------------------------------------------*/
 
-
-	config_destroy(config);
+	terminar_programa(conexion, logger, config);
 }
 
 t_log* iniciar_logger(void)
 {
-	t_log* nuevo_logger = log_create("/home/utnso/tp0/client/tp0.log","EL logger",1,LOG_LEVEL_INFO);
+	t_log* nuevo_logger = log_create("tp0.log","EL logger",1,LOG_LEVEL_INFO);
 
 	return nuevo_logger;
 }
@@ -87,9 +94,13 @@ void leer_consola(t_log* logger)
 
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
 
-
+	while (leido !=NULL && strcmp(leido, "")){
+		log_info(logger, leido);
+		free (leido);			//Hay que poner el free antes de leer el proximo y no después, porque si no sería escibirlo y borrarlo
+		leido = readline("> ");
+	}
 	// ¡No te olvides de liberar las lineas antes de regresar!
-
+	free (leido); //Libera el último leido que no entra al while
 }
 
 void paquete(int conexion)
@@ -107,6 +118,7 @@ void paquete(int conexion)
 
 void terminar_programa(int conexion, t_log* logger, t_config* config)
 {
-	/* Y por ultimo, hay que liberar lo que utilizamos (conexion, log y config) 
-	  con las funciones de las commons y del TP mencionadas en el enunciado */
+	log_destroy(logger);
+	config_destroy(config); //Cuando hice el config=iniciarConfig se reservaron bloques de memoria en el Heap y no se libera cunado termtina el programa, por eso debo eliminarla a manopla.
+	liberar_conexion(conexion);
 }
