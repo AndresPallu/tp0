@@ -1,11 +1,23 @@
+# Generated files
+bin/
+obj/
+*.log
+
 # Eclipse files
+.settings/
+.cproject
+.project
 .metadata/
 
 # CLion files
 .idea/
 
-# Log files
-*.log
+# Visual Studio Code files
+.vscode/*
+!.vscode/c_cpp_properties.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
 
 # Prerequisites
 *.d
@@ -31,7 +43,7 @@
 *.la
 *.lo
 
-# Shared objects (inc. Windows DLLs)
+# Shared objects
 *.dll
 *.so
 *.so.*
