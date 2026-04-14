@@ -1,5 +1,4 @@
 #include "client.h"
-//#include <readline/readline.h>      Es la que incluye la función redline ("> "), pero no se agrega porqeue está en ¿las commons? 
 
 int main(void)
 {
@@ -16,8 +15,6 @@ int main(void)
 	/* ---------------- LOGGING ---------------- */
 
 	logger = iniciar_logger();
-	
-	log_info(logger, "Hola! Soy un log maravilloso.");
 
 	// Usando el logger creado previamente
 	// Escribi: "Hola! Soy un log"
@@ -27,25 +24,13 @@ int main(void)
 
 	config = iniciar_config();
 
-	valor = config_get_string_value(config, "CLAVE");
-	ip = config_get_string_value(config, "IP");
-	puerto = config_get_string_value(config, "PUERTO");
-
-	if (valor == NULL) {
-		abort();
-		};
-
-		
-	log_info(logger, valor);
-	log_info(logger, ip);
-	log_info(logger, puerto);
 	// Usando el config creado previamente, leemos los valores del config y los 
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
 
 	// Loggeamos el valor de config
 
 
-	/* ---------------- LEER DE CONSOLPruA ---------------- */
+	/* ---------------- LEER DE CONSOLA ---------------- */
 
 	leer_consola(logger);
 
@@ -57,34 +42,29 @@ int main(void)
 	conexion = crear_conexion(ip, puerto);
 
 	// Enviamos al servidor el valor de CLAVE como mensaje
-	enviar_mensaje(valor, conexion);
 
 	// Armamos y enviamos el paquete
 	paquete(conexion);
-
-	//agregar_a_paquete();
-
 
 	terminar_programa(conexion, logger, config);
 
 	/*---------------------------------------------------PARTE 5-------------------------------------------------------------*/
 	// Proximamente
-	/*-----------------------------------------------------------------------------------------------------------------------*/
 }
 
 t_log* iniciar_logger(void)
 {
-	t_log* nuevo_logger = log_create("tp0.log","EL logger",1,LOG_LEVEL_INFO);
+	t_log* nuevo_logger;
 
 	return nuevo_logger;
 }
 
 t_config* iniciar_config(void)
 {
-	t_config* nuevo_config = config_create("cliente.config");   // /home/utnso/tp0/client/cliente.config
+	t_config* nuevo_config;
 
 	return nuevo_config;
-}  //Al ejecutar VS hace un cd a la carpeta del proyecto. Variable workspaceFolder del launch.json:   /home/utnso/tp0/client
+}
 
 void leer_consola(t_log* logger)
 {
@@ -95,13 +75,9 @@ void leer_consola(t_log* logger)
 
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
 
-	while (strcmp(leido, "") != 0){   //leido es NULL si el usuario corta la consola?
-		log_info(logger, leido);
-		free (leido);			//Hay que poner el free antes de leer el proximo y no después, porque si no sería escibirlo y borrarlo
-		leido = readline("> ");
-	}
+
 	// ¡No te olvides de liberar las lineas antes de regresar!
-	free (leido); //Libera el último leido que no entra al while
+
 }
 
 void paquete(int conexion)
@@ -114,13 +90,11 @@ void paquete(int conexion)
 
 
 	// ¡No te olvides de liberar las líneas y el paquete antes de regresar!
-	eliminar_paquete(paquete);
-	free(leido);
+	
 }
 
 void terminar_programa(int conexion, t_log* logger, t_config* config)
 {
-	log_destroy(logger);
-	config_destroy(config); //Cuando hice el config=iniciarConfig se reservaron bloques de memoria en el Heap y no se libera cunado termtina el programa, por eso debo eliminarla a manopla.
-	liberar_conexion(conexion);
+	/* Y por ultimo, hay que liberar lo que utilizamos (conexion, log y config) 
+	  con las funciones de las commons y del TP mencionadas en el enunciado */
 }

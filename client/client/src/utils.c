@@ -29,12 +29,10 @@ int crear_conexion(char *ip, char* puerto)
 	getaddrinfo(ip, puerto, &hints, &server_info);
 
 	// Ahora vamos a crear el socket.
-	int socket_cliente = socket (server_info->ai_family,
-							  server_info->ai_socktype,
-							  server_info->ai_protocol); //Esto linea no sé si va epro está en la guia ed sockets
+	int socket_cliente = 0;
 
 	// Ahora que tenemos el socket, vamos a conectarlo
-	connect(socket_cliente, server_info->ai_addr, server_info->ai_addrlen);
+
 
 	freeaddrinfo(server_info);
 
