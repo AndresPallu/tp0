@@ -28,8 +28,8 @@ int main(void)
 	config = iniciar_config();
 
 	valor = config_get_string_value(config, "CLAVE");
-	char * ipDeConfig = config_get_string_value(config, "IP");
-	char * puertoDeConfig = config_get_string_value(config, "PUERTO");
+	ip = config_get_string_value(config, "IP");
+	puerto = config_get_string_value(config, "PUERTO");
 
 	if (valor == NULL) {
 		abort();
@@ -37,15 +37,15 @@ int main(void)
 
 		
 	log_info(logger, valor);
-	log_info(logger, ipDeConfig);
-	log_info(logger, puertoDeConfig);
+	log_info(logger, ip);
+	log_info(logger, puerto);
 	// Usando el config creado previamente, leemos los valores del config y los 
 	// dejamos en las variables 'ip', 'puerto' y 'valor'
 
 	// Loggeamos el valor de config
 
 
-	/* ---------------- LEER DE CONSOLA ---------------- */
+	/* ---------------- LEER DE CONSOLPruA ---------------- */
 
 	leer_consola(logger);
 
@@ -54,21 +54,22 @@ int main(void)
 	// ADVERTENCIA: Antes de continuar, tenemos que asegurarnos que el servidor esté corriendo para poder conectarnos a él
 
 	// Creamos una conexión hacia el servidor
-	//conexion = crear_conexion(ip, puerto);
+	conexion = crear_conexion(ip, puerto);
 
 	// Enviamos al servidor el valor de CLAVE como mensaje
+	enviar_mensaje(valor, conexion);
 
 	// Armamos y enviamos el paquete
-	//paquete(conexion);
+	paquete(conexion);
+
+	//agregar_a_paquete();
 
 
-
+	terminar_programa(conexion, logger, config);
 
 	/*---------------------------------------------------PARTE 5-------------------------------------------------------------*/
 	// Proximamente
 	/*-----------------------------------------------------------------------------------------------------------------------*/
-
-	terminar_programa(conexion, logger, config);
 }
 
 t_log* iniciar_logger(void)
@@ -94,7 +95,7 @@ void leer_consola(t_log* logger)
 
 	// El resto, las vamos leyendo y logueando hasta recibir un string vacío
 
-	while (leido !=NULL && strcmp(leido, "")){
+	while (strcmp(leido, "") != 0){   //leido es NULL si el usuario corta la consola?
 		log_info(logger, leido);
 		free (leido);			//Hay que poner el free antes de leer el proximo y no después, porque si no sería escibirlo y borrarlo
 		leido = readline("> ");
@@ -113,7 +114,8 @@ void paquete(int conexion)
 
 
 	// ¡No te olvides de liberar las líneas y el paquete antes de regresar!
-	
+	eliminar_paquete(paquete);
+	free(leido);
 }
 
 void terminar_programa(int conexion, t_log* logger, t_config* config)
